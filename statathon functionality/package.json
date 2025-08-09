@@ -1,0 +1,56 @@
+{
+  "name": "ai-enhanced-survey-analysis",
+  "version": "1.0.0",
+  "description": "AI-Enhanced Application for Automated Data Preparation, Estimation and Report Writing",
+  "private": true,
+  "dependencies": {
+    "date-fns": "^2.30.0",
+    "framer-motion": "^10.12.16",
+    "jspdf": "^3.0.1",
+    "jspdf-autotable": "^5.0.2",
+    "lodash": "^4.17.21",
+    "lucide-react": "^0.263.1",
+    "mathjs": "^11.8.0",
+    "papaparse": "^5.4.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-dropzone": "^14.2.3",
+    "react-hot-toast": "^2.4.1",
+    "react-scripts": "5.0.1",
+    "react-select": "^5.7.3",
+    "react-table": "^7.8.0",
+    "tailwind-merge": "^2.2.0",
+    "xlsx": "^0.18.5"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@tailwindcss/forms": "^0.5.7",
+    "@tailwindcss/typography": "^0.5.10",
+    "autoprefixer": "^10.4.16",
+    "postcss": "^8.4.32",
+    "tailwindcss": "^3.4.0"
+  }
+}

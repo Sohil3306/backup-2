@@ -1,0 +1,9 @@
+@echo off
+echo Starting AI-Enhanced Survey Analysis Application...
+echo.
+echo Installing dependencies...
+npm install
+echo.
+echo Starting development server...
+npm start
+pause 

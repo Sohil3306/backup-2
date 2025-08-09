@@ -1,0 +1,1247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI-Enhanced Survey Data Analysis Tool</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .main-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            margin: 20px auto;
+            overflow: hidden;
+            max-width: 1400px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50, #3498db);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+
+        .header p {
+            margin: 10px 0 0 0;
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .step-card {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .step-card:hover {
+            border-color: #3498db;
+            box-shadow: 0 10px 25px rgba(52, 152, 219, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .step-card.active {
+            border-color: #27ae60;
+            background: linear-gradient(135deg, #f8fffe 0%, #f0fff4 100%);
+        }
+
+        .step-number {
+            position: absolute;
+            top: -15px;
+            left: 20px;
+            background: #3498db;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .step-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            padding-left: 40px;
+        }
+
+        .upload-area {
+            border: 2px dashed #3498db;
+            border-radius: 15px;
+            padding: 40px;
+            text-align: center;
+            background: #f8f9fa;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .upload-area:hover {
+            border-color: #2980b9;
+            background: #e3f2fd;
+            transform: scale(1.02);
+        }
+
+        .upload-area.dragover {
+            border-color: #27ae60;
+            background: #e8f5e8;
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            color: #3498db;
+            margin-bottom: 20px;
+        }
+
+        .results-section {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 25px;
+        }
+
+        .metric-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .metric-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #3498db;
+        }
+
+        .metric-label {
+            color: #6c757d;
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .spinner-border {
+            width: 3rem;
+            height: 3rem;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .alert {
+            margin-bottom: 20px;
+            border-radius: 10px;
+            border: none;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .btn {
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .form-select {
+            border-radius: 8px;
+            border: 2px solid #e9ecef;
+            transition: all 0.3s ease;
+        }
+
+        .form-select:focus {
+            border-color: #3498db;
+            box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+        }
+
+        .table {
+            font-size: 0.9rem;
+        }
+
+        .table th {
+            background-color: #f8f9fa;
+            border-top: none;
+            font-weight: 600;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            
+            .step-card {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="main-container">
+            <!-- Header -->
+            <div class="header">
+                <h1><i class="fas fa-chart-line"></i> AI-Enhanced Survey Data Analysis</h1>
+                <p>Automated Data Preparation, Estimation and Report Writing Tool</p>
+            </div>
+
+            <!-- Main Content -->
+            <div class="content" id="app">
+                <!-- Alerts will be inserted here -->
+                
+                <!-- Step 1: Data Upload -->
+                <div class="step-card active" id="step1">
+                    <div class="step-number">1</div>
+                    <div class="step-title">Data Upload & Configuration</div>
+                    
+                    <div class="upload-area" id="uploadArea">
+                        <div class="upload-icon">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                        </div>
+                        <h5>Upload Your Survey Data</h5>
+                        <p class="text-muted">Drag and drop your CSV or Excel file here, or click to browse</p>
+                        <input type="file" id="fileInput" accept=".csv,.xlsx,.xls" style="display: none;">
+                        <button class="btn btn-primary" onclick="document.getElementById('fileInput').click()">
+                            <i class="fas fa-folder-open"></i> Choose File
+                        </button>
+                    </div>
+
+                    <div id="fileInfo" style="display: none;">
+                        <!-- File info will be displayed here -->
+                    </div>
+                </div>
+
+                <!-- Step 2: Data Cleaning Configuration -->
+                <div class="step-card" id="step2">
+                    <div class="step-number">2</div>
+                    <div class="step-title">Data Cleaning Configuration</div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-magic"></i> Missing Value Imputation</h6>
+                            <div class="mb-3">
+                                <label class="form-label">Imputation Method:</label>
+                                <select class="form-select" id="imputationMethod">
+                                    <option value="">Select method...</option>
+                                    <option value="mean">Mean</option>
+                                    <option value="median">Median</option>
+                                    <option value="knn">K-Nearest Neighbors (KNN)</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Columns to Impute:</label>
+                                <select class="form-select" id="imputationColumns" multiple>
+                                    <!-- Populated dynamically -->
+                                </select>
+                                <small class="text-muted">Leave empty for all numeric columns</small>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-exclamation-triangle"></i> Outlier Detection & Handling</h6>
+                            <div class="mb-3">
+                                <label class="form-label">Outlier Method:</label>
+                                <select class="form-select" id="outlierMethod">
+                                    <option value="">Select method...</option>
+                                    <option value="iqr">Interquartile Range (IQR)</option>
+                                    <option value="zscore">Z-Score</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Handling Strategy:</label>
+                                <select class="form-select" id="outlierHandling">
+                                    <option value="winsorize">Winsorize (Cap at percentiles)</option>
+                                    <option value="remove">Remove Outliers</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Columns to Check:</label>
+                                <select class="form-select" id="outlierColumns" multiple>
+                                    <!-- Populated dynamically -->
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 3: Weight Application -->
+                <div class="step-card" id="step3">
+                    <div class="step-number">3</div>
+                    <div class="step-title">Survey Weight Application</div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-balance-scale"></i> Weight Configuration</h6>
+                            <div class="mb-3">
+                                <label class="form-label">Weight Column:</label>
+                                <select class="form-select" id="weightColumn">
+                                    <option value="">No weights (equal weights)</option>
+                                    <!-- Populated dynamically -->
+                                </select>
+                                <small class="text-muted">If no weight column is selected, equal weights will be applied</small>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-calculator"></i> Estimation Variables</h6>
+                            <div class="mb-3">
+                                <label class="form-label">Variables to Estimate:</label>
+                                <select class="form-select" id="estimateColumns" multiple>
+                                    <!-- Populated dynamically -->
+                                </select>
+                                <small class="text-muted">Leave empty to estimate all numeric variables</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 4: Analysis & Results -->
+                <div class="step-card" id="step4">
+                    <div class="step-number">4</div>
+                    <div class="step-title">Analysis & Results</div>
+                    
+                    <div class="text-center">
+                        <button class="btn btn-success btn-lg me-2" onclick="runAnalysis()">
+                            <i class="fas fa-play"></i> Run Analysis
+                        </button>
+                        <button class="btn btn-info btn-lg" onclick="generateReport()" id="reportBtn" disabled>
+                            <i class="fas fa-file-pdf"></i> Generate Report
+                        </button>
+                    </div>
+
+                    <div id="loading" class="loading" style="display: none;">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <p class="mt-2">Processing your data...</p>
+                    </div>
+
+                    <div id="results" style="display: none;">
+                        <!-- Results will be displayed here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- External Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.8.0/math.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
+
+    <script>
+        // Global variables
+        let currentData = null;
+        let dataInfo = null;
+        let analysisResults = null;
+        let dataProcessor = null;
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeApp();
+        });
+
+        function initializeApp() {
+            // Set up file input listener
+            document.getElementById('fileInput').addEventListener('change', handleFileUpload);
+            
+            // Set up drag and drop
+            const uploadArea = document.getElementById('uploadArea');
+            uploadArea.addEventListener('dragover', handleDragOver);
+            uploadArea.addEventListener('dragleave', handleDragLeave);
+            uploadArea.addEventListener('drop', handleDrop);
+            
+            // Initialize data processor
+            dataProcessor = new DataProcessor();
+            
+            showAlert('Welcome! Upload your CSV or Excel file to get started.', 'info');
+        }
+
+        // File upload handling
+        function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            processFile(file);
+        }
+
+        function handleDragOver(e) {
+            e.preventDefault();
+            document.getElementById('uploadArea').classList.add('dragover');
+        }
+
+        function handleDragLeave(e) {
+            e.preventDefault();
+            document.getElementById('uploadArea').classList.remove('dragover');
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            document.getElementById('uploadArea').classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                processFile(files[0]);
+            }
+        }
+
+        async function processFile(file) {
+            showAlert('Processing file...', 'info');
+            
+            try {
+                const data = await parseFile(file);
+                if (data && data.length > 0) {
+                    currentData = data;
+                    dataInfo = dataProcessor.loadData(data);
+                    displayFileInfo(dataInfo);
+                    populateColumnSelects(dataInfo.columns);
+                    setStepActive(2);
+                    showAlert('File uploaded successfully!', 'success');
+                } else {
+                    showAlert('Invalid or empty file', 'danger');
+                }
+            } catch (error) {
+                showAlert('Error processing file: ' + error.message, 'danger');
+            }
+        }
+
+        function parseFile(file) {
+            return new Promise((resolve, reject) => {
+                if (file.name.endsWith('.csv')) {
+                    Papa.parse(file, {
+                        header: true,
+                        skipEmptyLines: true,
+                        complete: (results) => {
+                            if (results.errors.length > 0) {
+                                reject(new Error('CSV parsing errors'));
+                            } else {
+                                resolve(cleanData(results.data));
+                            }
+                        },
+                        error: (error) => reject(error)
+                    });
+                } else if (file.name.endsWith('.xlsx') || file.name.endsWith('.xls')) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        try {
+                            const data = new Uint8Array(e.target.result);
+                            const workbook = XLSX.read(data, { type: 'array' });
+                            const sheetName = workbook.SheetNames[0];
+                            const worksheet = workbook.Sheets[sheetName];
+                            const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+                            
+                            if (jsonData.length === 0) {
+                                reject(new Error('Excel file is empty'));
+                                return;
+                            }
+                            
+                            const headers = jsonData[0];
+                            const rows = jsonData.slice(1);
+                            const result = rows.map(row => {
+                                const obj = {};
+                                headers.forEach((header, index) => {
+                                    obj[header] = row[index] !== undefined ? row[index] : null;
+                                });
+                                return obj;
+                            });
+                            
+                            resolve(cleanData(result));
+                        } catch (error) {
+                            reject(error);
+                        }
+                    };
+                    reader.onerror = () => reject(new Error('Failed to read Excel file'));
+                    reader.readAsArrayBuffer(file);
+                } else {
+                    reject(new Error('Unsupported file type'));
+                }
+            });
+        }
+
+        function cleanData(data) {
+            return data.map(row => {
+                const cleanedRow = {};
+                Object.keys(row).forEach(key => {
+                    let value = row[key];
+                    if (value === '' || value === undefined || value === null) {
+                        cleanedRow[key] = null;
+                    } else {
+                        const numValue = parseFloat(value);
+                        if (!isNaN(numValue) && value.toString().trim() !== '') {
+                            cleanedRow[key] = numValue;
+                        } else {
+                            cleanedRow[key] = value.toString().trim();
+                        }
+                    }
+                });
+                return cleanedRow;
+            }).filter(row => Object.values(row).some(value => value !== null && value !== ''));
+        }
+
+        function displayFileInfo(info) {
+            const fileInfoDiv = document.getElementById('fileInfo');
+            fileInfoDiv.innerHTML = `
+                <div class="alert alert-success">
+                    <i class="fas fa-check-circle"></i> File uploaded successfully!
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6>File Information:</h6>
+                        <ul class="list-unstyled">
+                            <li><strong>Shape:</strong> ${info.shape[0]} rows × ${info.shape[1]} columns</li>
+                            <li><strong>Columns:</strong> ${info.columns.length}</li>
+                            <li><strong>Numeric Columns:</strong> ${info.numericColumns.length}</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>Sample Data:</h6>
+                        <div class="table-responsive">
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        ${info.columns.map(col => `<th>${col}</th>`).join('')}
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${info.sampleData.map(row => `
+                                        <tr>
+                                            ${info.columns.map(col => `<td>${row[col] || ''}</td>`).join('')}
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            `;
+            fileInfoDiv.style.display = 'block';
+        }
+
+        function populateColumnSelects(columns) {
+            const selects = ['imputationColumns', 'outlierColumns', 'estimateColumns'];
+            const weightSelect = document.getElementById('weightColumn');
+            
+            selects.forEach(selectId => {
+                const select = document.getElementById(selectId);
+                select.innerHTML = '';
+                columns.forEach(col => {
+                    const option = document.createElement('option');
+                    option.value = col;
+                    option.textContent = col;
+                    select.appendChild(option);
+                });
+            });
+            
+            weightSelect.innerHTML = '<option value="">No weights (equal weights)</option>';
+            columns.forEach(col => {
+                const option = document.createElement('option');
+                option.value = col;
+                option.textContent = col;
+                weightSelect.appendChild(option);
+            });
+        }
+
+        function runAnalysis() {
+            if (!currentData) {
+                showAlert('Please upload a file first!', 'warning');
+                return;
+            }
+
+            const config = getConfig();
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('results').style.display = 'none';
+
+            // Simulate processing time
+            setTimeout(() => {
+                try {
+                    // Apply data cleaning
+                    if (config.imputationMethod) {
+                        dataProcessor.imputeMissingValues(
+                            config.imputationMethod,
+                            config.imputationColumns.length > 0 ? config.imputationColumns : null
+                        );
+                    }
+
+                    if (config.outlierMethod) {
+                        dataProcessor.handleOutliers(
+                            config.outlierHandling,
+                            config.outlierColumns.length > 0 ? config.outlierColumns : null
+                        );
+                    }
+
+                    // Apply weights
+                    dataProcessor.applyWeights(config.weightColumn);
+
+                    // Calculate estimates
+                    const estimates = dataProcessor.calculateEstimates(
+                        config.estimateColumns.length > 0 ? config.estimateColumns : null
+                    );
+
+                    // Get additional statistics
+                    const missingInfo = dataProcessor.detectMissingValues();
+                    const outliersInfo = dataProcessor.detectOutliers(config.outlierMethod);
+                    const summaryStats = dataProcessor.getSummaryStatistics();
+                    const correlationMatrix = dataProcessor.getCorrelationMatrix();
+
+                    analysisResults = {
+                        estimates,
+                        missingInfo,
+                        outliersInfo,
+                        summaryStats,
+                        correlationMatrix,
+                        cleanedShape: dataProcessor.cleanedData ? [dataProcessor.cleanedData.length, Object.keys(dataProcessor.cleanedData[0]).length] : null
+                    };
+
+                    displayResults(analysisResults);
+                    setStepActive(4);
+                    document.getElementById('reportBtn').disabled = false;
+                    document.getElementById('loading').style.display = 'none';
+                    showAlert('Analysis completed successfully!', 'success');
+                } catch (error) {
+                    document.getElementById('loading').style.display = 'none';
+                    showAlert('Analysis error: ' + error.message, 'danger');
+                }
+            }, 1000);
+        }
+
+        function getConfig() {
+            return {
+                imputationMethod: document.getElementById('imputationMethod').value,
+                imputationColumns: Array.from(document.getElementById('imputationColumns').selectedOptions).map(opt => opt.value),
+                outlierMethod: document.getElementById('outlierMethod').value,
+                outlierHandling: document.getElementById('outlierHandling').value,
+                outlierColumns: Array.from(document.getElementById('outlierColumns').selectedOptions).map(opt => opt.value),
+                weightColumn: document.getElementById('weightColumn').value,
+                estimateColumns: Array.from(document.getElementById('estimateColumns').selectedOptions).map(opt => opt.value)
+            };
+        }
+
+        function displayResults(results) {
+            const resultsDiv = document.getElementById('results');
+            
+            let html = `
+                <div class="results-section">
+                    <h5><i class="fas fa-chart-bar"></i> Analysis Results</h5>
+                    
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="metric-card">
+                                <div class="metric-value">${results.cleanedShape ? results.cleanedShape[0] : 'N/A'}</div>
+                                <div class="metric-label">Cleaned Rows</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="metric-card">
+                                <div class="metric-value">${results.missingInfo?.totalMissing || 0}</div>
+                                <div class="metric-label">Missing Values</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="metric-card">
+                                <div class="metric-value">${Object.keys(results.estimates || {}).length}</div>
+                                <div class="metric-label">Variables Analyzed</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="metric-card">
+                                <div class="metric-value">
+                                    ${Object.values(results.outliersInfo || {}).filter(info => info.count > 0).length}
+                                </div>
+                                <div class="metric-label">Columns with Outliers</div>
+                            </div>
+                        </div>
+                    </div>
+            `;
+
+            if (results.estimates) {
+                html += `
+                    <div class="mt-4">
+                        <h6><i class="fas fa-calculator"></i> Statistical Estimates</h6>
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Variable</th>
+                                        <th>Unweighted Mean</th>
+                                        <th>Weighted Mean</th>
+                                        <th>Margin of Error</th>
+                                        <th>Standard Error</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${Object.entries(results.estimates).map(([variable, est]) => `
+                                        <tr>
+                                            <td><strong>${variable}</strong></td>
+                                            <td>${est.unweighted.mean.toFixed(4)}</td>
+                                            <td>${est.weighted.mean.toFixed(4)}</td>
+                                            <td>±${est.weighted.moe.toFixed(4)}</td>
+                                            <td>${est.weighted.se.toFixed(4)}</td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                `;
+            }
+
+            html += '</div>';
+            resultsDiv.innerHTML = html;
+            resultsDiv.style.display = 'block';
+        }
+
+        function generateReport() {
+            if (!analysisResults) {
+                showAlert('Please run analysis first!', 'warning');
+                return;
+            }
+
+            try {
+                const config = getConfig();
+                const reportGenerator = new ReportGenerator();
+                const filename = reportGenerator.generateReport(
+                    dataInfo,
+                    analysisResults.missingInfo,
+                    analysisResults.outliersInfo,
+                    analysisResults.estimates,
+                    analysisResults.summaryStats,
+                    analysisResults.correlationMatrix,
+                    config
+                );
+                
+                showAlert(`Report generated: ${filename}`, 'success');
+            } catch (error) {
+                showAlert('Report generation error: ' + error.message, 'danger');
+            }
+        }
+
+        function setStepActive(step) {
+            for (let i = 1; i <= 4; i++) {
+                const stepElement = document.getElementById(`step${i}`);
+                if (i <= step) {
+                    stepElement.classList.add('active');
+                } else {
+                    stepElement.classList.remove('active');
+                }
+            }
+        }
+
+        function showAlert(message, type = 'info') {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
+            alertDiv.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            
+            const container = document.querySelector('.content');
+            container.insertBefore(alertDiv, container.firstChild);
+            
+            setTimeout(() => {
+                if (alertDiv.parentNode) {
+                    alertDiv.remove();
+                }
+            }, 5000);
+        }
+
+        // DataProcessor Class
+        class DataProcessor {
+            constructor() {
+                this.data = null;
+                this.cleanedData = null;
+                this.weights = null;
+            }
+
+            loadData(data) {
+                this.data = data;
+                this.cleanedData = null;
+                this.weights = null;
+                return this.getDataInfo();
+            }
+
+            getDataInfo() {
+                if (!this.data || this.data.length === 0) return null;
+
+                const columns = Object.keys(this.data[0]);
+                const numericColumns = columns.filter(col => 
+                    this.data.some(row => !isNaN(parseFloat(row[col])) && row[col] !== null && row[col] !== '')
+                );
+
+                return {
+                    shape: [this.data.length, columns.length],
+                    columns: columns,
+                    numericColumns: numericColumns,
+                    sampleData: this.data.slice(0, 5)
+                };
+            }
+
+            detectMissingValues() {
+                if (!this.data) return null;
+
+                const columns = Object.keys(this.data[0]);
+                const missingPerColumn = {};
+                let totalMissing = 0;
+
+                columns.forEach(col => {
+                    const missing = this.data.filter(row => 
+                        row[col] === null || row[col] === undefined || row[col] === '' || isNaN(row[col])
+                    ).length;
+                    missingPerColumn[col] = missing;
+                    totalMissing += missing;
+                });
+
+                return { totalMissing, missingPerColumn };
+            }
+
+            imputeMissingValues(method = 'mean', columns = null) {
+                if (!this.data) return null;
+
+                this.cleanedData = JSON.parse(JSON.stringify(this.data));
+
+                if (!columns) {
+                    const info = this.getDataInfo();
+                    columns = info.numericColumns;
+                }
+
+                columns.forEach(col => {
+                    const values = this.data
+                        .map(row => parseFloat(row[col]))
+                        .filter(val => !isNaN(val) && val !== null);
+
+                    if (values.length === 0) return;
+
+                    let imputeValue;
+                    switch (method) {
+                        case 'mean':
+                            imputeValue = math.mean(values);
+                            break;
+                        case 'median':
+                            imputeValue = math.median(values);
+                            break;
+                        case 'knn':
+                            imputeValue = math.mean(values);
+                            break;
+                        default:
+                            imputeValue = math.mean(values);
+                    }
+
+                    this.cleanedData.forEach(row => {
+                        if (row[col] === null || row[col] === undefined || row[col] === '' || isNaN(row[col])) {
+                            row[col] = imputeValue;
+                        }
+                    });
+                });
+
+                return this.cleanedData;
+            }
+
+            detectOutliers(method = 'iqr', columns = null) {
+                if (!this.data) return null;
+
+                if (!columns) {
+                    const info = this.getDataInfo();
+                    columns = info.numericColumns;
+                }
+
+                const outliersInfo = {};
+
+                columns.forEach(col => {
+                    const values = this.data
+                        .map(row => parseFloat(row[col]))
+                        .filter(val => !isNaN(val) && val !== null);
+
+                    if (values.length === 0) return;
+
+                    let outliers = [];
+                    
+                    if (method === 'iqr') {
+                        const sorted = values.sort((a, b) => a - b);
+                        const q1 = math.quantileSeq(sorted, 0.25);
+                        const q3 = math.quantileSeq(sorted, 0.75);
+                        const iqr = q3 - q1;
+                        const lowerBound = q1 - 1.5 * iqr;
+                        const upperBound = q3 + 1.5 * iqr;
+                        
+                        outliers = values.filter(val => val < lowerBound || val > upperBound);
+                    } else if (method === 'zscore') {
+                        const mean = math.mean(values);
+                        const std = math.std(values);
+                        const zScores = values.map(val => Math.abs((val - mean) / std));
+                        outliers = values.filter((val, index) => zScores[index] > 3);
+                    }
+
+                    outliersInfo[col] = {
+                        count: outliers.length,
+                        percentage: (outliers.length / values.length) * 100,
+                        values: outliers
+                    };
+                });
+
+                return outliersInfo;
+            }
+
+            handleOutliers(method = 'winsorize', columns = null) {
+                if (!this.cleanedData) {
+                    this.cleanedData = JSON.parse(JSON.stringify(this.data));
+                }
+
+                if (!columns) {
+                    const info = this.getDataInfo();
+                    columns = info.numericColumns;
+                }
+
+                columns.forEach(col => {
+                    const values = this.cleanedData
+                        .map(row => parseFloat(row[col]))
+                        .filter(val => !isNaN(val) && val !== null);
+
+                    if (values.length === 0) return;
+
+                    if (method === 'winsorize') {
+                        const sorted = values.sort((a, b) => a - b);
+                        const lowerPercentile = math.quantileSeq(sorted, 0.05);
+                        const upperPercentile = math.quantileSeq(sorted, 0.95);
+                        
+                        this.cleanedData.forEach(row => {
+                            const val = parseFloat(row[col]);
+                            if (!isNaN(val)) {
+                                row[col] = Math.max(lowerPercentile, Math.min(upperPercentile, val));
+                            }
+                        });
+                    }
+                });
+
+                return this.cleanedData;
+            }
+
+            applyWeights(weightColumn = null) {
+                if (!this.cleanedData) {
+                    this.cleanedData = JSON.parse(JSON.stringify(this.data));
+                }
+
+                if (weightColumn && this.cleanedData[0][weightColumn] !== undefined) {
+                    this.weights = this.cleanedData.map(row => parseFloat(row[weightColumn]) || 1);
+                } else {
+                    this.weights = new Array(this.cleanedData.length).fill(1);
+                }
+
+                return this.weights;
+            }
+
+            calculateEstimates(columns = null) {
+                if (!this.cleanedData) {
+                    this.cleanedData = JSON.parse(JSON.stringify(this.data));
+                }
+
+                if (!columns) {
+                    const info = this.getDataInfo();
+                    columns = info.numericColumns;
+                }
+
+                const estimates = {};
+
+                columns.forEach(col => {
+                    const values = this.cleanedData
+                        .map(row => parseFloat(row[col]))
+                        .filter(val => !isNaN(val) && val !== null);
+
+                    if (values.length === 0) return;
+
+                    const weights = this.weights ? 
+                        this.cleanedData
+                            .map((row, index) => ({ val: parseFloat(row[col]), weight: this.weights[index] }))
+                            .filter(item => !isNaN(item.val) && item.val !== null)
+                            .map(item => item.weight) : 
+                        new Array(values.length).fill(1);
+
+                    // Unweighted estimates
+                    const unweightedMean = math.mean(values);
+                    const unweightedStd = math.std(values);
+                    const unweightedSe = unweightedStd / Math.sqrt(values.length);
+                    const unweightedMoe = 1.96 * unweightedSe;
+
+                    // Weighted estimates
+                    const weightedValues = this.cleanedData
+                        .map((row, index) => ({ val: parseFloat(row[col]), weight: this.weights[index] }))
+                        .filter(item => !isNaN(item.val) && item.val !== null);
+
+                    const totalWeight = weightedValues.reduce((sum, item) => sum + item.weight, 0);
+                    const weightedMean = weightedValues.reduce((sum, item) => sum + (item.val * item.weight), 0) / totalWeight;
+                    
+                    const weightedVariance = weightedValues.reduce((sum, item) => 
+                        sum + (Math.pow(item.val - weightedMean, 2) * item.weight), 0) / totalWeight;
+                    const weightedStd = Math.sqrt(weightedVariance);
+                    const weightedSe = weightedStd / Math.sqrt(weightedValues.length);
+                    const weightedMoe = 1.96 * weightedSe;
+
+                    estimates[col] = {
+                        unweighted: {
+                            mean: unweightedMean,
+                            std: unweightedStd,
+                            se: unweightedSe,
+                            moe: unweightedMoe
+                        },
+                        weighted: {
+                            mean: weightedMean,
+                            std: weightedStd,
+                            se: weightedSe,
+                            moe: weightedMoe
+                        }
+                    };
+                });
+
+                return estimates;
+            }
+
+            getSummaryStatistics(columns = null) {
+                if (!this.cleanedData) {
+                    this.cleanedData = JSON.parse(JSON.stringify(this.data));
+                }
+
+                if (!columns) {
+                    const info = this.getDataInfo();
+                    columns = info.numericColumns;
+                }
+
+                const summary = {};
+
+                columns.forEach(col => {
+                    const values = this.cleanedData
+                        .map(row => parseFloat(row[col]))
+                        .filter(val => !isNaN(val) && val !== null);
+
+                    if (values.length === 0) return;
+
+                    const sorted = values.sort((a, b) => a - b);
+                    
+                    summary[col] = {
+                        count: values.length,
+                        mean: math.mean(values),
+                        median: math.median(values),
+                        std: math.std(values),
+                        min: math.min(values),
+                        max: math.max(values),
+                        q1: math.quantileSeq(sorted, 0.25),
+                        q3: math.quantileSeq(sorted, 0.75)
+                    };
+                });
+
+                return summary;
+            }
+
+            getCorrelationMatrix(columns = null) {
+                if (!this.cleanedData) {
+                    this.cleanedData = JSON.parse(JSON.stringify(this.data));
+                }
+
+                if (!columns) {
+                    const info = this.getDataInfo();
+                    columns = info.numericColumns;
+                }
+
+                const correlationMatrix = {};
+
+                columns.forEach(col1 => {
+                    correlationMatrix[col1] = {};
+                    columns.forEach(col2 => {
+                        const values1 = this.cleanedData
+                            .map(row => parseFloat(row[col1]))
+                            .filter(val => !isNaN(val) && val !== null);
+                        const values2 = this.cleanedData
+                            .map(row => parseFloat(row[col2]))
+                            .filter(val => !isNaN(val) && val !== null);
+
+                        if (values1.length === values2.length && values1.length > 1) {
+                            correlationMatrix[col1][col2] = this.calculateCorrelation(values1, values2);
+                        } else {
+                            correlationMatrix[col1][col2] = 0;
+                        }
+                    });
+                });
+
+                return correlationMatrix;
+            }
+
+            calculateCorrelation(x, y) {
+                const n = x.length;
+                const sumX = x.reduce((a, b) => a + b, 0);
+                const sumY = y.reduce((a, b) => a + b, 0);
+                const sumXY = x.reduce((sum, xi, i) => sum + xi * y[i], 0);
+                const sumX2 = x.reduce((sum, xi) => sum + xi * xi, 0);
+                const sumY2 = y.reduce((sum, yi) => sum + yi * yi, 0);
+
+                const numerator = n * sumXY - sumX * sumY;
+                const denominator = Math.sqrt((n * sumX2 - sumX * sumX) * (n * sumY2 - sumY * sumY));
+
+                return denominator === 0 ? 0 : numerator / denominator;
+            }
+        }
+
+        // ReportGenerator Class
+        class ReportGenerator {
+            constructor() {
+                this.doc = null;
+                this.yPosition = 20;
+                this.margin = 20;
+                this.pageWidth = 210;
+                this.contentWidth = this.pageWidth - (2 * this.margin);
+            }
+
+            initDocument(title = 'Survey Data Analysis Report') {
+                this.doc = new jsPDF.jsPDF();
+                this.yPosition = 20;
+                
+                this.doc.setFontSize(20);
+                this.doc.setFont('helvetica', 'bold');
+                this.doc.text(title, this.pageWidth / 2, this.yPosition, { align: 'center' });
+                this.yPosition += 15;
+                
+                this.doc.setFontSize(10);
+                this.doc.setFont('helvetica', 'normal');
+                const timestamp = new Date().toLocaleString();
+                this.doc.text(`Generated on: ${timestamp}`, this.pageWidth / 2, this.yPosition, { align: 'center' });
+                this.yPosition += 20;
+                
+                return this.doc;
+            }
+
+            addSectionHeader(text) {
+                this.checkPageBreak(15);
+                
+                this.doc.setFontSize(14);
+                this.doc.setFont('helvetica', 'bold');
+                this.doc.text(text, this.margin, this.yPosition);
+                this.yPosition += 10;
+                
+                return this;
+            }
+
+            addDataSummary(dataInfo) {
+                this.checkPageBreak(30);
+                
+                this.addSectionHeader('Data Summary');
+                
+                const summaryData = [
+                    ['Dataset Shape', `${dataInfo.shape[0]} rows × ${dataInfo.shape[1]} columns`],
+                    ['Total Variables', dataInfo.columns.length.toString()],
+                    ['Numeric Variables', dataInfo.numericColumns.length.toString()],
+                    ['Categorical Variables', (dataInfo.columns.length - dataInfo.numericColumns.length).toString()]
+                ];
+                
+                this.doc.autoTable({
+                    startY: this.yPosition,
+                    head: [['Metric', 'Value']],
+                    body: summaryData,
+                    theme: 'grid',
+                    headStyles: { fillColor: [52, 73, 94], textColor: 255 },
+                    styles: { fontSize: 10 }
+                });
+                
+                this.yPosition = this.doc.lastAutoTable.finalY + 10;
+                
+                return this;
+            }
+
+            addEstimatesTable(estimates) {
+                if (!estimates || Object.keys(estimates).length === 0) {
+                    return this;
+                }
+                
+                this.checkPageBreak(40);
+                
+                this.addSectionHeader('Statistical Estimates');
+                
+                const estimatesData = Object.entries(estimates).map(([variable, est]) => [
+                    variable,
+                    est.unweighted.mean.toFixed(4),
+                    est.weighted.mean.toFixed(4),
+                    `±${est.weighted.moe.toFixed(4)}`,
+                    est.weighted.se.toFixed(4)
+                ]);
+                
+                this.doc.autoTable({
+                    startY: this.yPosition,
+                    head: [['Variable', 'Unweighted Mean', 'Weighted Mean', 'Margin of Error', 'Standard Error']],
+                    body: estimatesData,
+                    theme: 'grid',
+                    headStyles: { fillColor: [46, 204, 113], textColor: 255 },
+                    styles: { fontSize: 8 }
+                });
+                
+                this.yPosition = this.doc.lastAutoTable.finalY + 10;
+                
+                return this;
+            }
+
+            checkPageBreak(requiredSpace) {
+                if (this.yPosition + requiredSpace > 280) {
+                    this.doc.addPage();
+                    this.yPosition = 20;
+                }
+            }
+
+            generateReport(dataInfo, missingInfo, outliersInfo, estimates, summaryStats, correlationMatrix, config) {
+                this.initDocument('Survey Data Analysis Report');
+                
+                this.addDataSummary(dataInfo);
+                this.addEstimatesTable(estimates);
+                
+                const filename = `survey_analysis_report_${new Date().toISOString().split('T')[0]}.pdf`;
+                this.doc.save(filename);
+                
+                return filename;
+            }
+        }
+    </script>
+</body>
+</html> 
